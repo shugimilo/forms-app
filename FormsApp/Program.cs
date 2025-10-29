@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using FormsApp.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace FormsApp
 {
     public class Program
@@ -8,6 +12,8 @@ namespace FormsApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=formsapp.db"));
 
             var app = builder.Build();
 
