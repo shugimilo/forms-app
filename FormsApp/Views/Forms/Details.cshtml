@@ -1,0 +1,19 @@
+@model FormsApp.Models.Form
+
+@{
+    ViewData["Title"] = "Form Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Title</h4>
+        <p class="card-text">@Model.Description</p>
+        <p><strong>Created At:</strong> @Model.CreatedAt.ToString("g")</p>
+        <p><strong>Created By User ID:</strong> @Model.UserId</p>
+        <p><strong>Requires Login:</strong> @(Model.RequireLogin ? "Yes" : "No")</p>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Back to Forms</a>

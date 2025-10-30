@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FormsApp.Models 
@@ -29,5 +30,7 @@ namespace FormsApp.Models
         [Required]
         [StringLength(20)]
         public string Role { get; set; } = "User"; // or "Admin"
+
+        public ICollection<Form>? Forms { get; set; }
     }
 }

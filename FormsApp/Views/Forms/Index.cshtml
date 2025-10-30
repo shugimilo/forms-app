@@ -1,0 +1,39 @@
+@model IEnumerable<FormsApp.Models.Form>
+
+    @{
+    ViewData["Title"] = "Forms";
+    }
+
+    <h2>@ViewData["Title"]</h2>
+
+    <p>
+        <a class="btn btn-primary" asp-action="Create">Create New Form</a>
+    </p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Require Login</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var form in Model)
+        {
+            <tr>
+                <td>@form.Id</td>
+                <td>@form.Title</td>
+                <td>@form.Description</td>
+                <td>@(form.RequireLogin ? "Yes" : "No")</td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@form.Id">Details</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@form.Id">Edit</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@form.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>

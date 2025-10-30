@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var username = Context.Session.GetString("Username");
 }
 
 <div class="text-center mt-5">
@@ -10,8 +11,18 @@
     </p>
 
     <div class="d-flex justify-content-center gap-3">
+        @if (username == null)
+    {
         <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Register">Register</a>
         <a class="btn btn-success btn-lg" asp-controller="Account" asp-action="Login">Login</a>
         <a class="btn btn-warning btn-lg" asp-controller="Users" asp-action="Index">Users</a>
+    }
+    else
+    {
+        <div class="d-flex flex-column align-items-start">
+            <p>Welcome back, <strong>@username</strong>!</p>
+            <a class="btn btn-success m-2" asp-controller="Forms" asp-action="Index">Go to My Forms</a>
+        </div>
+    }
     </div>
 </div>

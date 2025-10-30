@@ -11,5 +11,6 @@ namespace FormsApp.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Form> Forms { get; set; }
     }
 }
