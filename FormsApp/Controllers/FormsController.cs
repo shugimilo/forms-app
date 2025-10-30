@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using FormsApp.Data;
 using FormsApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FormsApp.Controllers
 {
@@ -15,15 +16,33 @@ namespace FormsApp.Controllers
         }
 
         // GET: /Forms
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var forms = await _context.Forms.ToListAsync();
+            var currentUserId = HttpContext.Session.GetString("UserId");
+
+            IQueryable<Form> query = _context.Forms;
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                query = query.Where(f => !f.RequireLogin);
+            }
+            else
+            {
+                int userId = int.Parse(currentUserId);
+                query = query.Where(f => !f.RequireLogin || f.UserId == userId);
+            }
+            
+            var forms = await query.ToListAsync();
             return View(forms);
         }
 
         // GET: /Forms/Create
         public IActionResult Create()
         {
+            if(!HttpContext.Session.Keys.Contains("UserId"))
+                return RedirectToAction("Login", "Account");
+
             return View();
         }
 
@@ -45,18 +64,22 @@ namespace FormsApp.Controllers
         }
 
         // GET: /Forms/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
                 return NotFound();
 
             var form = await _context.Forms
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(f => f.Id == id);
 
             if (form == null)
                 return NotFound();
 
-            if (form.RequireLogin && !HttpContext.Session.Keys.Contains("UserId"))
+            var currentUserId = HttpContext.Session.GetString("UserId");
+
+
+            if (form.RequireLogin && string.IsNullOrEmpty(currentUserId))
                 return RedirectToAction("Login", "Account");
 
             return View(form);
@@ -65,6 +88,9 @@ namespace FormsApp.Controllers
         // GET: /Forms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!HttpContext.Session.Keys.Contains("UserId"))
+                return RedirectToAction("Login", "Account");
+
             if (id == null)
                 return NotFound();
 
@@ -124,6 +150,9 @@ namespace FormsApp.Controllers
         // GET: /Forms/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!HttpContext.Session.Keys.Contains("UserId"))
+                return RedirectToAction("Login", "Account");
+
             if (id == null)
                 return NotFound();
 
@@ -139,7 +168,7 @@ namespace FormsApp.Controllers
         // POST: /Forms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var form = await _context.Forms.FindAsync(id);
             if (form != null)
