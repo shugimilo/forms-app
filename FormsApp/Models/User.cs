@@ -17,5 +17,17 @@ namespace FormsApp.Models
 
         [Required]
         public string PasswordHash { get; set; }
+
+        [StringLength(50)]
+        public string? FirstName { get; set; }
+
+        [StringLength(50)]
+        public string? LastName { get; set; }
+
+        public DateTime DateJoined { get; set; } = DateTime.UtcNow;
+
+        [Required]
+        [StringLength(20)]
+        public string Role { get; set; } = "User"; // or "Admin"
     }
 }

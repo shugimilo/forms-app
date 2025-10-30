@@ -13,9 +13,20 @@ namespace FormsApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Data Source=formsapp.db"));
+            // var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "formsapp.db");
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(@"Data Source=C:\Users\pimid\source\repos\forms-app\FormsApp\formsapp.db"));
+
+            builder.Services.AddDistributedMemoryCache(); // required for session storage
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // session timeout
+            });
+
+            Console.WriteLine("DB Path: " + Path.GetFullPath(@"C:\Users\pimid\source\repos\forms-app\FormsApp\formsapp.db"));
 
             var app = builder.Build();
+
+            app.UseSession(); // enables session middleware
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
