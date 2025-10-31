@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace FormsApp.Models
 {
@@ -20,5 +21,7 @@ namespace FormsApp.Models
         public int UserId { get; set; }
 
         public bool RequireLogin { get; set; }
+
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
     }
 }
