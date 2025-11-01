@@ -1,0 +1,28 @@
+@model FormsApp.Models.Question
+@{
+    ViewData["Title"] = "Question Details";
+}
+
+<h2>Question Details</h2>
+
+<div class="card p-3">
+    <h4>@Model.Text</h4>
+    <p><strong>Type:</strong> @Model.Type</p>
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+        <img src="@Model.ImagePath" class="img-fluid rounded mb-3" alt="Question image" />
+    }
+
+    @if (Model.Options != null && Model.Options.Any())
+    {
+        <h5>Options:</h5>
+        <ul>
+            @foreach (var opt in Model.Options)
+            {
+                <li>@opt.Text</li>
+            }
+        </ul>
+    }
+</div>
+
+<a asp-action="Index" asp-route-formId="@Model.FormId" class="btn btn-secondary mt-3">Back to List</a>

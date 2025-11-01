@@ -1,0 +1,40 @@
+@model FormsApp.Models.QuestionCreateViewModel
+@{
+    ViewData["Title"] = "Create Question";
+}
+
+<h2>Create Question</h2>
+
+<form asp-controller="Questions" asp-action="Create" method="post">
+    <!-- Hidden field bound to the view model -->
+    <input type="hidden" asp-for="FormId" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Text"></label>
+        <input asp-for="Text" class="form-control" />
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Type"></label>
+        <select asp-for="Type" class="form-select">
+            <option value="">Select type...</option>
+            <option value="ShortText">Short Text</option>
+            <option value="LongText">Long Text</option>
+            <option value="SingleChoice">Single Choice</option>
+            <option value="MultipleChoice">Multiple Choice</option>
+            <option value="Numeric">Numeric</option>
+            <option value="Date">Date</option>
+            <option value="Time">Time</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="ImagePath"></label>
+        <input asp-for="ImagePath" class="form-control" placeholder="Optional image path" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Create</button>
+    <a asp-action="Index" asp-route-formId="@Model.FormId" class="btn btn-secondary">Cancel</a>
+</form>

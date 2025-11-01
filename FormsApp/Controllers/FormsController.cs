@@ -21,7 +21,7 @@ namespace FormsApp.Controllers
         {
             var currentUserId = HttpContext.Session.GetString("UserId");
 
-            IQueryable<Form> query = _context.Forms;
+            IQueryable<Form> query = _context.Forms.Include(f => f.Questions);
 
             if (string.IsNullOrEmpty(currentUserId))
             {
@@ -71,6 +71,7 @@ namespace FormsApp.Controllers
                 return NotFound();
 
             var form = await _context.Forms
+                .Include(f => f.Questions)
                 .FirstOrDefaultAsync(f => f.Id == id);
 
             if (form == null)

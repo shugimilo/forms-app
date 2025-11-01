@@ -1,0 +1,41 @@
+﻿@model IEnumerable<FormsApp.Models.Question>
+@{
+    ViewData["Title"] = "Questions";
+    var form = ViewBag.Form as FormsApp.Models.Form;
+}
+
+<h2>@form?.Title – Questions</h2>
+
+<a asp-controller="Forms" asp-action="Index" class="btn btn-secondary mb-3">← Back to Forms</a>
+<a asp-controller="Questions" asp-action="Create" asp-route-formId="@form?.Id" class="btn btn-primary mb-3">Add Question</a>
+
+@if (!Model.Any())
+{
+    <p>No questions found for this form.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Text</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var q in Model)
+        {
+            <tr>
+                <td>@q.Text</td>
+                <td>@q.Type</td>
+                <td>
+                    <a asp-controller="Questions" asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-controller="Questions" asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-controller="Questions" asp-action="Delete" asp-route-id="@q.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
