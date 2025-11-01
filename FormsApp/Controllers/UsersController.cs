@@ -37,9 +37,20 @@ namespace FormsApp.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
-            if (!HttpContext.Session.Keys.Contains("UserId"))
+            string? _userId = HttpContext.Session.GetString("UserId");
+            string? _role = HttpContext.Session.GetString("Role");
+            if (_userId == null)
+            {
                 return RedirectToAction("Login", "Account");
-            return View();
+            }
+            else
+            {
+                if (_role == null || _role != "Admin")
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+                return View();
         }
 
         // POST: Users/Create
@@ -68,10 +79,15 @@ namespace FormsApp.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (!HttpContext.Session.Keys.Contains("UserId"))
+            string? _userId = HttpContext.Session.GetString("UserId");
+            string? _role = HttpContext.Session.GetString("Role");
+
+            if (_userId == null)
                 return RedirectToAction("Login", "Account");
 
             if (id == null) return NotFound();
+
+            if ((Convert.ToString(id) != _userId) || (_role != "Admin")) return RedirectToAction("Index", "Home");
 
             var user = await _context.Users.FindAsync(id);
             if (user == null) return NotFound();
@@ -127,10 +143,18 @@ namespace FormsApp.Controllers
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            string? _userId = HttpContext.Session.GetString("UserId");
+            string? _role = HttpContext.Session.GetString("Role");
+
             if (!HttpContext.Session.Keys.Contains("UserId"))
                 return RedirectToAction("Login", "Account");
 
             if (id == null) return NotFound();
+
+            if (_role != "Admin" && id != int.Parse(_userId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
             if (user == null) return NotFound();

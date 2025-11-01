@@ -77,6 +77,7 @@ namespace FormsApp.Controllers
                 // store user info in session
                 HttpContext.Session.SetString("UserId", user.Id.ToString());
                 HttpContext.Session.SetString("Username", user.Username);
+                HttpContext.Session.SetString("Role", user.Role);
                 return RedirectToAction("Index", "Home");
             }
 

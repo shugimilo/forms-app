@@ -19,10 +19,11 @@
     }
     else
     {
-        <div class="d-flex flex-column align-items-start">
-            <p>Welcome back, <strong>@username</strong>!</p>
-            <a class="btn btn-success m-2" asp-controller="Forms" asp-action="Index">Go to My Forms</a>
-        </div>
+    <div class="d-flex flex-column align-items-start">
+        <p>Welcome back, <strong>@username</strong>!</p>
+        <a class="btn btn-success m-2" asp-controller="Forms" asp-action="Index">Go to My Forms</a>
+        <a class="btn btn-warning btn-lg" asp-controller="Users" asp-action="Index">Users</a>
+    </div>
     }
     </div>
 </div>
