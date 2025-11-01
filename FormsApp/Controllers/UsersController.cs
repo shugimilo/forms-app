@@ -37,6 +37,8 @@ namespace FormsApp.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
+            if (!HttpContext.Session.Keys.Contains("UserId"))
+                return RedirectToAction("Login", "Account");
             return View();
         }
 
@@ -66,6 +68,9 @@ namespace FormsApp.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!HttpContext.Session.Keys.Contains("UserId"))
+                return RedirectToAction("Login", "Account");
+
             if (id == null) return NotFound();
 
             var user = await _context.Users.FindAsync(id);
@@ -122,6 +127,9 @@ namespace FormsApp.Controllers
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!HttpContext.Session.Keys.Contains("UserId"))
+                return RedirectToAction("Login", "Account");
+
             if (id == null) return NotFound();
 
             var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
