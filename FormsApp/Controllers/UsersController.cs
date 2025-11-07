@@ -87,7 +87,10 @@ namespace FormsApp.Controllers
 
             if (id == null) return NotFound();
 
-            if ((Convert.ToString(id) != _userId) || (_role != "Admin")) return RedirectToAction("Index", "Home");
+            if (_role != "Admin" && id != int.Parse(_userId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             var user = await _context.Users.FindAsync(id);
             if (user == null) return NotFound();

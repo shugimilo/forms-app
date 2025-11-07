@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using FormsApp.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace FormsApp
 {
@@ -13,8 +12,10 @@ namespace FormsApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            // var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "formsapp.db");
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(@"Data Source=C:\Users\pimid\source\repos\forms-app\FormsApp\formsapp.db"));
+            // Cross-platform database path
+            var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "formsapp.db");
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite($"Data Source={dbPath}"));
 
             builder.Services.AddDistributedMemoryCache(); // required for session storage
             builder.Services.AddSession(options =>
@@ -22,7 +23,7 @@ namespace FormsApp
                 options.IdleTimeout = TimeSpan.FromMinutes(30); // session timeout
             });
 
-            Console.WriteLine("DB Path: " + Path.GetFullPath(@"C:\Users\pimid\source\repos\forms-app\FormsApp\formsapp.db"));
+            Console.WriteLine("DB Path: " + dbPath);
 
             var app = builder.Build();
 
@@ -32,7 +33,6 @@ namespace FormsApp
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
