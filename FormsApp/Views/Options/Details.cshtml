@@ -1,0 +1,21 @@
+@model FormsApp.Models.Option
+@{
+    ViewData["Title"] = "Option Details";
+}
+
+<h2>Option Details</h2>
+
+<div class="card p-3 mb-3">
+    <h4>@Model.Text</h4>
+
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+    <img src="@Model.ImagePath" class="img-fluid rounded mb-3" alt="Option image" />
+    }
+
+    <p><strong>Question:</strong> @Model.Question?.Text</p>
+</div>
+
+<a asp-controller="Options" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">Edit</a>
+<a asp-controller="Options" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+<a asp-controller="Questions" asp-action="Details" asp-route-id="@Model.QuestionId" class="btn btn-secondary">Back to Question</a>

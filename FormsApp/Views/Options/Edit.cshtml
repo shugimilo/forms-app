@@ -1,0 +1,25 @@
+@model FormsApp.Models.OptionCreateViewModel
+@{
+    ViewData["Title"] = "Edit Option";
+}
+
+<h2>Edit Option</h2>
+
+<form asp-controller="Options" asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="QuestionId" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Text"></label>
+        <input asp-for="Text" class="form-control" />
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="ImagePath"></label>
+        <input asp-for="ImagePath" class="form-control" placeholder="Optional image path" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-controller="Questions" asp-action="Details" asp-route-id="@Model.QuestionId" class="btn btn-secondary">Cancel</a>
+</form>

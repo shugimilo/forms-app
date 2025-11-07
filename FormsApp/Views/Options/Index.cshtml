@@ -1,0 +1,59 @@
+﻿@model IEnumerable<FormsApp.Models.Option>
+
+    @{
+    ViewData["Title"] = "Options";
+    var firstOption = Model.FirstOrDefault();
+    var question = firstOption?.Question;
+    }
+
+    <h2>@(question != null ? $"{question.Text} – Options" : "Options")</h2>
+
+    @if (question != null)
+{
+    <a asp-controller="Questions" asp-action="Details" asp-route-id="@question.Id" class="btn btn-secondary mb-3">← Back to Question</a>
+    <a asp-controller="Options" asp-action="Create" asp-route-questionId="@question.Id" class="btn btn-primary mb-3">Add Option</a>
+}
+else
+{
+    <a asp-controller="Questions" asp-action="Index" class="btn btn-secondary mb-3">← Back to Questions</a>
+}
+
+    @if (!Model.Any())
+{
+    <p>No options found for this question.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Text</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var option in Model)
+            {
+            <tr>
+                <td>@option.Text</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(option.ImagePath))
+                        {
+                    <img src="@option.ImagePath" alt="Option image" style="max-width: 100px; max-height: 100px;" />
+                        }
+                        else
+                        {
+                    <em>No image</em>
+                        }
+                </td>
+                <td>
+                    <a asp-controller="Options" asp-action="Details" asp-route-id="@option.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-controller="Options" asp-action="Edit" asp-route-id="@option.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-controller="Options" asp-action="Delete" asp-route-id="@option.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}

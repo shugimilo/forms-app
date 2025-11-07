@@ -2,7 +2,8 @@ using FormsApp.Data;
 using FormsApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormsApp.Controllers
 {
@@ -15,24 +16,23 @@ namespace FormsApp.Controllers
             _context = context;
         }
 
+        // ------------------------------------------------------------
         // GET: /Questions?formId=5
-        [AllowAnonymous]
+        // ------------------------------------------------------------
         public async Task<IActionResult> Index(int formId)
         {
-            var form = await _context.Forms.FindAsync(formId);
-            if (form == null)
-                return NotFound();
-
             var questions = await _context.Questions
                 .Where(q => q.FormId == formId)
+                .Include(q => q.Options)
                 .ToListAsync();
 
-            ViewBag.Form = form;
+            ViewBag.FormId = formId; // optional, for your view
             return View(questions);
         }
 
+        // ------------------------------------------------------------
         // GET: /Questions/Details/5
-        [AllowAnonymous]
+        // ------------------------------------------------------------
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,17 +49,22 @@ namespace FormsApp.Controllers
             return View(question);
         }
 
+        // ------------------------------------------------------------
         // GET: /Questions/Create?formId=5
+        // ------------------------------------------------------------
         public IActionResult Create(int formId)
         {
             var model = new QuestionCreateViewModel
             {
                 FormId = formId
             };
+
             return View(model);
         }
 
+        // ------------------------------------------------------------
         // POST: /Questions/Create
+        // ------------------------------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(QuestionCreateViewModel model)
@@ -80,12 +85,16 @@ namespace FormsApp.Controllers
 
                 _context.Questions.Add(question);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Questions", new { formId = question.FormId });
+
+                return RedirectToAction(nameof(Index), new { formId = model.FormId });
             }
+
             return View(model);
         }
 
+        // ------------------------------------------------------------
         // GET: /Questions/Edit/5
+        // ------------------------------------------------------------
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -98,7 +107,9 @@ namespace FormsApp.Controllers
             return View(question);
         }
 
+        // ------------------------------------------------------------
         // POST: /Questions/Edit/5
+        // ------------------------------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Question question)
@@ -126,7 +137,9 @@ namespace FormsApp.Controllers
             return View(question);
         }
 
+        // ------------------------------------------------------------
         // GET: /Questions/Delete/5
+        // ------------------------------------------------------------
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -142,10 +155,12 @@ namespace FormsApp.Controllers
             return View(question);
         }
 
+        // ------------------------------------------------------------
         // POST: /Questions/Delete/5
-        [HttpPost]
+        // ------------------------------------------------------------
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var question = await _context.Questions.FindAsync(id);
             if (question != null)
