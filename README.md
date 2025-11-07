@@ -91,7 +91,7 @@ If you want to contribute:
 
 ## Author
 
-Petar Milojević - (shugimilo)[https://github.com/shugimilo]
+Petar Milojević - [shugimilo](https://github.com/shugimilo)
 
 ## License
 
