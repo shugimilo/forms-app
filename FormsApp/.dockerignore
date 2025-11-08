@@ -1,0 +1,35 @@
+# Build folders
+bin/
+obj/
+
+# Visual Studio / Rider / VS Code
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+
+# OS-generated files
+*.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Database journals
+*.db-journal
+
+# Temporary files
+*.tmp
+*.temp
+
+# NuGet packages (they'll be restored inside Docker)
+*.nupkg
+packages/
+
+# Publish output (if present)
+publish/
+
+# Node/npm stuff (if any)
+node_modules/

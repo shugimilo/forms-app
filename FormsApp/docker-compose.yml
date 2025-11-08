@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  formsapp:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./FormsApp/formsapp.db:/app/formsapp.db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: unless-stopped
