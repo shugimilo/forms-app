@@ -1,4 +1,4 @@
-﻿# Forms App
+# Forms App
 
 **Forms App** is a university project that mimics the functionality of Google Forms. It allows users to register and log in, create forms with multiple questions, and even include questions with multiple options and optional images.  
 
@@ -12,7 +12,9 @@
 - [Features](#features)  
 - [Installation](#installation)  
 - [Usage](#usage)  
+- [Docker](#docker)  
 - [Contributing](#contributing)  
+- [Author](#author)  
 - [License](#license)  
 
 ---
@@ -76,6 +78,36 @@
 4. Access forms anonymously or based on user permissions.  
 
 *Screenshots and more detailed instructions will be added soon.*
+
+---
+
+## Docker
+
+You can run the application inside a Docker container with a persistent database:
+
+1. **Prerequisites:**  
+   - [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed  
+
+2. **Run with Docker Compose:**  
+   ```bash
+   cd FormsApp
+   docker-compose up --build
+   ```
+3. Notes on database persistence:
+  - The **formsapp.db** file is mounted as a volume:
+    ```yaml
+    volumes:
+      - ./formsapp.dbL/app/formsapp.db
+    ```
+  - This ensures that the same database is used across:
+    - Local runs (dotnet run)
+    - Debug sessions in Visual Studio
+    - Docker containers
+  - Environment variable FORMSAPP_DB=/app/formsapp.db is used inside the container for consistent paths.
+4. Access the app:
+  - Open [localhost port 8080](http://localhost:8080) in your browser (mapped in **docker-compose.yml**).
+5. Resetting the database:
+  - If needed, you can remove formsapp.db in the project root to start fresh.
 
 ---
 
