@@ -6,7 +6,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./FormsApp/formsapp.db:/app/formsapp.db
+      - ./formsapp.db:/app/formsapp.db
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - FORMSAPP_DB=/app/formsapp.db
     restart: unless-stopped

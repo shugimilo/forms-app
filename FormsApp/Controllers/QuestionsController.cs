@@ -26,6 +26,11 @@ namespace FormsApp.Controllers
                 .Include(q => q.Options)
                 .ToListAsync();
 
+            var form = _context.Forms.Find(formId);
+            if (form == null) return NotFound();
+
+            ViewBag.Form = form;
+
             ViewBag.FormId = formId; // optional, for your view
             return View(questions);
         }
@@ -97,14 +102,36 @@ namespace FormsApp.Controllers
         // ------------------------------------------------------------
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!HttpContext.Session.Keys.Contains("UserId"))
+                return RedirectToAction("Login", "Account");
             if (id == null)
                 return NotFound();
 
-            var question = await _context.Questions.FindAsync(id);
+            var question = await _context.Questions
+                .Include(q => q.Form)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
             if (question == null)
                 return NotFound();
 
-            return View(question);
+            var currentUserId = HttpContext.Session.GetString("UserId");
+            if (currentUserId == null || question.Form.UserId != int.Parse(currentUserId))
+                return Forbid();
+
+            var model = new QuestionEditViewModel
+            {
+                Id = question.Id,
+                Text = question.Text,
+                Type = question.Type,
+                IsRequired = question.IsRequired,
+                ImagePath = question.ImagePath,
+                MinValue = question.MinValue,
+                MaxValue = question.MaxValue,
+                Step = question.Step,
+                FormId = question.FormId
+            };
+
+            return View(model);
         }
 
         // ------------------------------------------------------------
@@ -112,29 +139,38 @@ namespace FormsApp.Controllers
         // ------------------------------------------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Question question)
+        public async Task<IActionResult> Edit(int id, QuestionEditViewModel model)
         {
-            if (id != question.Id)
+            if (id != model.Id)
                 return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(question);
+                    var question = await _context.Questions.FindAsync(model.Id);
+                    if (question == null) return NotFound();
+                    question.Text = model.Text;
+                    question.Type = model.Type;
+                    question.IsRequired = model.IsRequired;
+                    question.ImagePath = model.ImagePath;
+                    question.MinValue = model.MinValue;
+                    question.MaxValue = model.MaxValue;
+                    question.Step = model.Step;
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index), new { formId = question.FormId });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Questions.Any(e => e.Id == question.Id))
+                    if (!_context.Questions.Any(e => e.Id == model.Id))
                         return NotFound();
                     else
                         throw;
                 }
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(question);
+            return View(model);
         }
 
         // ------------------------------------------------------------

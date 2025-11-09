@@ -9,27 +9,33 @@ namespace FormsApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Services
             builder.Services.AddControllersWithViews();
 
-            // Cross-platform database path
-            var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "formsapp.db");
+            /* var dbPath = Environment.GetEnvironmentVariable("FORMSAPP_DB") ??
+                          Path.Combine(Directory.GetCurrentDirectory(), "formsapp.db"); */
+
+            // var projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
+            // var dbPath = Path.Combine(projectRoot, "formsapp.db");
+
+            var dbPath = Environment.GetEnvironmentVariable("FORMSAPP_DB")
+             ?? Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..")), "formsapp.db");
+
+            Console.WriteLine("Using DB at: " + dbPath);
+
+
+            Console.WriteLine("Using DB at: " + dbPath);
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite($"Data Source={dbPath}"));
 
-            builder.Services.AddDistributedMemoryCache(); // required for session storage
-            builder.Services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(30); // session timeout
-            });
-
-            Console.WriteLine("DB Path: " + dbPath);
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(30));
 
             var app = builder.Build();
 
-            app.UseSession(); // enables session middleware
+            app.UseSession();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -38,14 +44,19 @@ namespace FormsApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // Apply migrations
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                db.Database.Migrate();
+            }
 
             app.Run();
         }
